@@ -17,7 +17,7 @@ BuildRequires:	python3-build
 BuildRequires:	python3-installer
 BuildRequires:	python3-modules >= 1:3.9
 %if %{with tests}
-#BuildRequires:	python3-
+BuildRequires:	python3-pytest-xdist
 %endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.044
@@ -45,8 +45,6 @@ Dokumentacja API modułu Pythona %{module}.
 %prep
 %setup -q -n %{module}-%{version}
 
-sed -i -e 's#--numprocesses=auto##g' -e 's#--numprocesses=0##g' pytest.ini
-
 %build
 %py3_build_pyproject
 
@@ -54,7 +52,7 @@ sed -i -e 's#--numprocesses=auto##g' -e 's#--numprocesses=0##g' pytest.ini
 %{__python} -m zipfile -e build-3/*.whl build-3-test
 # use explicit plugins list for reliable builds (delete PYTEST_PLUGINS if empty)
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
-PYTEST_PLUGINS=pytest_codspeed \
+PYTEST_PLUGINS=pytest_codspeed,xdist,benchmark \
 %{__python3} -m pytest -o pythonpath="$PWD/build-3-test" tests
 %endif
 
