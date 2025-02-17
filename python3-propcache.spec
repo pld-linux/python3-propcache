@@ -6,7 +6,7 @@
 Summary:	Accelerated property cache
 Name:		python3-%{module}
 Version:	0.2.1
-Release:	2
+Release:	3
 License:	Apache
 Group:		Libraries/Python
 Source0:	https://pypi.debian.net/%{module}/%{module}-%{version}.tar.gz
@@ -18,13 +18,16 @@ BuildRequires:	python3-expandvars
 BuildRequires:	python3-installer
 BuildRequires:	python3-modules >= 1:3.9
 %if %{with tests}
+BuildRequires:	python3-covdefaults
 BuildRequires:	python3-mdit-py-plugins
+BuildRequires:	python3-pytest-benchmark
 BuildRequires:	python3-pytest_codspeed
 BuildRequires:	python3-pytest-xdist
 %endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
+BuidRequires:	python3-sphinxcontrib-towncrier
 BuildRequires:	sphinx-pdg-3
 %endif
 Requires:	python3-modules >= 1:3.2
