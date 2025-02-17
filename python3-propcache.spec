@@ -27,7 +27,7 @@ BuildRequires:	python3-pytest-xdist
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
-BuidRequires:	python3-sphinxcontrib-towncrier
+BuildRequires:	python3-sphinxcontrib-towncrier
 BuildRequires:	sphinx-pdg-3
 %endif
 Requires:	python3-modules >= 1:3.2
