@@ -6,7 +6,7 @@
 Summary:	Accelerated property cache
 Name:		python3-%{module}
 Version:	0.2.1
-Release:	1
+Release:	2
 License:	Apache
 Group:		Libraries/Python
 Source0:	https://pypi.debian.net/%{module}/%{module}-%{version}.tar.gz
@@ -14,9 +14,12 @@ Source0:	https://pypi.debian.net/%{module}/%{module}-%{version}.tar.gz
 URL:		https://pypi.org/project/propcache/
 BuildRequires:	python3-Cython
 BuildRequires:	python3-build
+BuildRequires:	python3-expandvars
 BuildRequires:	python3-installer
 BuildRequires:	python3-modules >= 1:3.9
 %if %{with tests}
+BuildRequires:	python3-mdit-py-plugins
+BuildRequires:	python3-pytest_codspeed
 BuildRequires:	python3-pytest-xdist
 %endif
 BuildRequires:	rpm-pythonprov
@@ -57,6 +60,8 @@ PYTEST_PLUGINS=pytest_codspeed,xdist,benchmark \
 %endif
 
 %if %{with doc}
+%{__python} -m zipfile -e build-3/*.whl build-3-doc
+export PYTHONPATH="$PWD/build-3-doc"
 %{__make} -C docs html \
 	SPHINXBUILD=sphinx-build-3
 rm -rf docs/_build/html/_sources
