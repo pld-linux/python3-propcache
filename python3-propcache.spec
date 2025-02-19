@@ -6,7 +6,7 @@
 Summary:	Accelerated property cache
 Name:		python3-%{module}
 Version:	0.2.1
-Release:	3
+Release:	4
 License:	Apache
 Group:		Libraries/Python
 Source0:	https://pypi.debian.net/%{module}/%{module}-%{version}.tar.gz
@@ -50,6 +50,9 @@ Dokumentacja API modułu Pythona %{module}.
 
 %prep
 %setup -q -n %{module}-%{version}
+
+# keep *.c files so debuginfo will pick it up
+sed -i -e 's#build_inplace: bool = False,#build_inplace: bool = True,#g' -e 's#build_inplace=False#build_inplace=True#g' packaging/pep517_backend/_backend.py
 
 %build
 %py3_build_pyproject
