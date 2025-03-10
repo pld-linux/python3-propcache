@@ -6,7 +6,7 @@
 Summary:	Accelerated property cache
 Name:		python3-%{module}
 Version:	0.2.1
-Release:	4
+Release:	5
 License:	Apache
 Group:		Libraries/Python
 Source0:	https://pypi.debian.net/%{module}/%{module}-%{version}.tar.gz
