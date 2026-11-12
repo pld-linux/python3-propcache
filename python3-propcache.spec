@@ -7,19 +7,19 @@
 Summary:	Accelerated property cache
 Summary(pl.UTF-8):	Akcelerowana pamięć podręczna własności
 Name:		python3-%{module}
-Version:	0.3.2
+Version:	0.5.4
 Release:	1
 License:	Apache v2.0
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/propcache/
 Source0:	https://files.pythonhosted.org/packages/source/p/propcache/%{module}-%{version}.tar.gz
-# Source0-md5:	1c073b491620a9f6d568276d61f80277
+# Source0-md5:	a0ee7b9105e3b9a423278af3816c1751
 URL:		https://pypi.org/project/propcache/
-BuildRequires:	python3-Cython >= 3.1.2
+BuildRequires:	python3-Cython >= 3.2.0
 BuildRequires:	python3-build
 BuildRequires:	python3-expandvars
 BuildRequires:	python3-installer
-BuildRequires:	python3-modules >= 1:3.9
+BuildRequires:	python3-modules >= 1:3.10
 BuildRequires:	python3-setuptools >= 1:47
 %if "%{_ver_lt %{py3_ver} 3.11}" == "1"
 BuildRequires:	python3-tomli
@@ -29,31 +29,33 @@ BuildRequires:	python3-covdefaults
 BuildRequires:	python3-mdit-py-plugins
 BuildRequires:	python3-pytest >= 8.3.5
 BuildRequires:	python3-pytest-benchmark
+BuildRequires:	python3-pytest-cov
 BuildRequires:	python3-pytest_codspeed >= 3.2.0
 BuildRequires:	python3-pytest-xdist
 %endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
-BuildRequires:	python3-myst_parser >= 0.10.0
+BuildRequires:	python3-myst_parser >= 4.0.1
 BuildRequires:	python3-sphinxcontrib-towncrier
 BuildRequires:	sphinx-pdg-3 >= 8.2.3
 %endif
-Requires:	python3-modules >= 1:3.9
+Requires:	python3-modules >= 1:3.10
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 The module provides a fast implementation of cached properties for
-Python 3.9+.
+Python 3.10+.
 
 %description -l pl.UTF-8
 Ten moduł dostarcza szybką implementację własności z pamięcią
-podręczną dla Pythona 3.9+.
+podręczną dla Pythona 3.10+.
 
 %package apidocs
 Summary:	API documentation for Python %{module} module
 Summary(pl.UTF-8):	Dokumentacja API modułu Pythona %{module}
 Group:		Documentation
+BuildArch:	noarch
 
 %description apidocs
 API documentation for Python %{module} module.
@@ -64,17 +66,16 @@ Dokumentacja API modułu Pythona %{module}.
 %prep
 %setup -q -n %{module}-%{version}
 
-# keep *.c files so debuginfo will pick it up
-sed -i -e 's#build_inplace: bool = False,#build_inplace: bool = True,#g' -e 's#build_inplace=False#build_inplace=True#g' packaging/pep517_backend/_backend.py
-
 %build
+# in-tree build keeps the cythonized *.c files for debuginfo
+export PROPCACHE_BUILD_INPLACE=1
 %py3_build_pyproject
 
 %if %{with tests}
 %{__python} -m zipfile -e build-3/*.whl build-3-test
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
 PYTEST_PLUGINS=pytest_codspeed,xdist,benchmark \
-%{__python3} -m pytest -o pythonpath="$PWD/build-3-test" tests
+%{__python3} -m pytest -o pythonpath="$PWD/build-3-test $PWD/packaging" tests
 %endif
 
 %if %{with doc}
